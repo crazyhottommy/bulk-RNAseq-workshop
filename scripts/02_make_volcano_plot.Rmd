@@ -1,0 +1,132 @@
+---
+title: "how to make volcano plot"
+output: html_document
+date: "2024-09-01"
+editor_options: 
+  chunk_output_type: console
+---
+
+### Make a volcano plot
+
+what is a volcano plot?
+
+It is a scatter plot:
+x-axis is the log2Fold change
+
+y-axis is -log10(p-value)
+
+
+```{r}
+res %>% 
+  as.data.frame() %>%
+  ggplot(aes(x = log2FoldChange, y = -log10(pvalue))) +
+  geom_point()
+  
+```
+
+hmm, what are the points on the top?
+
+```{r}
+res %>%
+  as.data.frame() %>%
+  arrange((padj), desc(log2FoldChange)) %>%
+  head(n = 30)
+```
+
+A basic volcano plot
+
+```{r}
+res %>% 
+  as.data.frame() %>%
+  ggplot(aes(x = log2FoldChange, y = -log10(pvalue))) +
+  geom_point() +
+  theme_bw(base_size = 14)
+```
+
+How to label the genes?
+
+```{r}
+
+res %>% 
+  as.data.frame() %>%
+  tibble::rownames_to_column(var = "gene") %>%
+  filter(!stringr::str_detect(gene, "LOC")) %>% 
+  filter(abs(log2FoldChange)>=3, padj <= 0.01) %>%
+  dim()
+
+
+res_sig<- res %>% 
+  as.data.frame() %>%
+  tibble::rownames_to_column(var = "gene") %>%
+  filter(!stringr::str_detect(gene, "LOC")) %>% 
+  filter(abs(log2FoldChange)>=3, padj <= 0.01) 
+  
+
+res %>% 
+  as.data.frame() %>%
+  ggplot(aes(x = log2FoldChange, y = -log10(pvalue))) +
+  geom_point() +
+  geom_label(data = res_sig, aes(label = gene))+
+  theme_bw(base_size = 14)
+```
+
+
+Let's color the points 
+
+```{r}
+res2<- res %>% 
+  as.data.frame() %>%
+  tibble::rownames_to_column(var = "gene") %>%
+  mutate(sig = case_when(
+    !stringr::str_detect(gene, "LOC") & abs(log2FoldChange)>=3 & 
+      padj <= 0.001 ~ "sig",
+    TRUE ~ "not sig"
+  ))
+  
+head(res2)
+
+ggplot(res2, aes(x = log2FoldChange, y = -log10(pvalue))) +
+  geom_point(aes(color = sig)) +
+  geom_text(data = res_sig, aes(label = gene))+
+  theme_bw(base_size = 14)
+```
+
+
+fix the color of the points 
+
+```{r}
+ggplot(res2, aes(x = log2FoldChange, y = -log10(pvalue))) +
+  geom_point(aes(color = sig)) +
+  scale_color_manual(values = c("blue", "red")) +
+  geom_text(data = res_sig, aes(label = gene))+
+  theme_bw(base_size = 14)
+```
+
+add horizontal and vertical lines
+```{r}
+ggplot(res2, aes(x = log2FoldChange, y = -log10(pvalue))) +
+  geom_point(aes(color = sig)) +
+  scale_color_manual(values = c("blue", "red")) +
+  geom_text(data = res_sig, aes(label = gene))+
+  geom_hline(yintercept = 100, linetype = 2, color = "red") +
+  geom_vline(xintercept = c(-3, 3), linetype = 2, color = "red")+
+  theme_bw(base_size = 14)
+```
+
+Let's use ggrepel
+
+```{r}
+# install.packages("ggrepel")
+
+library(ggrepel)
+
+ggplot(res2, aes(x = log2FoldChange, y = -log10(pvalue))) +
+  geom_point(aes(color = sig)) +
+  scale_color_manual(values = c("blue", "red")) +
+  geom_text_repel(data = res_sig, aes(label = gene))+
+  geom_hline(yintercept = 100, linetype = 2, color = "red") +
+  geom_vline(xintercept = c(-3, 3), linetype = 2, color = "red")+
+  theme_bw(base_size = 14)
+```
+Enhanced volcanoplot: https://bioconductor.org/packages/devel/bioc/vignettes/EnhancedVolcano/inst/doc/EnhancedVolcano.html
+
