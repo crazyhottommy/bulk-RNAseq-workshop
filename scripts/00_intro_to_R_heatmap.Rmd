@@ -2,62 +2,12 @@
 title: "intro to R"
 output: html_document
 date: "2024-09-01"
+editor_options: 
+  chunk_output_type: console
 ---
 # Introduction to R for biologists
 
 ## Basic Data Types in R
-
-### Before Starting
-
-When you're working with R, it's crucial to name your variables properly. Here are some simple rules to follow:
-
-1. Allowed Characters: Variable names can include letters, numbers, underscores (_), and periods (.).
-
-2. Starting Characters: A variable name must start with a letter or a period. It can't start with a number.
-
-3. Case Sensitivity: R treats variable names as case-sensitive. For example, myvar is different from MyVar.
-
-4. Dots in Names: While dots are allowed in variable names, it's best to avoid them except at the beginning.
-
-5. Avoiding Conflicts: Don't use names that match existing functions in R, like mean or c.
-
-#### Examples:
-
-Valid:
-
-* myvar
-
-* my.var
-
-* var1
-
-* var_1
-
-Invalid:
-
-* 1var (can't start with a number)
-
-* _temp (can't start with a _)
-
-* c (matches existing function)
-
-* my-var (hyphens aren't allowed)
-
-* my var (spaces aren't allowed)
-
-#### Tips for Naming:
-
-* Meaningful Names: Choose descriptive names like patient_data instead of generic ones like x, y, or z.
-
-* Short and Clear: Keep your names short but make sure they clearly represent what the variable contains.
-
-* Naming Style: You can use camelCase or underscores_between_words for multi-word names. Make sure to stick to one style and be consistent.
-
-Case Consistency: Decide whether you want all lowercase names or CapWords (also known as PascalCase), and stick to it throughout your code.
-
-By following these naming conventions, your code will be easier to understand, and you'll avoid unexpected errors. Consistency is key when naming variables across your R scripts.
-
-In R, data can be classified into several fundamental types, each serving specific purposes in data analysis and manipulation. Understanding these data types is crucial for effective data handling. Let's explore the primary data types in R:
 
 ### 1. Numeric
 
@@ -399,6 +349,7 @@ Now, instead of numerical indices, your matrix displays gene and sample names, m
 Subsetting allows you to extract specific rows and columns from a matrix. You can use numerical indices, row/column names, or logical vectors. Remember, R is 1-based. Indices start at 1 while Python starts at 0.
 
 ![](images/matrix.png)
+
 
 #### Subsetting using numerical indices
 
